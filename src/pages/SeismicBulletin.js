@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import SubComponent1 from './SeismicBulletin/SubComponent1';
-import SubComponent2 from './SeismicBulletin/SubComponent2';
+import Sub_server_event from './SeismicBulletin/Sub_server_event';
+import Sub_web_clickEvent from './SeismicBulletin/Sub_web_clickEvent';
 
 // 震情通报
 function SeismicBulletin() {
@@ -35,8 +35,8 @@ function SeismicBulletin() {
       </div>
 
       {/* 根据选中的标签显示内容 */}
-      {activeTab === 'auto' && <SubComponent1 />}
-      {activeTab === 'manual' && <SubComponent2 />}
+      {activeTab === 'auto' && <Sub_server_event />}
+      {activeTab === 'manual' && <Sub_web_clickEvent />}
     </div>
   );
 }

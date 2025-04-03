@@ -1,14 +1,14 @@
 import React from 'react';
-import SubComponent1 from './InformationReporting/SubComponent1';
-import SubComponent2 from './InformationReporting/SubComponent2';
+import SubComponent_Auto from './InformationReporting/SubComponent_Auto';
+import SubComponent_Click from './InformationReporting/SubComponent_Click';
 
 // 信息报送
 function InformationReporting() {
   return (
     <div>
       <h1>信息报送</h1>
-      <SubComponent1 />
-      <SubComponent2 />
+      <SubComponent_Auto />
+      <SubComponent_Click />
     </div>
   );
 }

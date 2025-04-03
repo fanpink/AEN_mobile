@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { FaHome, FaBell, FaEnvelope, FaCog } from 'react-icons/fa'; // 引入图标
+import { EventProvider } from './Status_Context'; // 引入 EventProvider
 import EarthquakeCatalog from './pages/EarthquakeCatalog';
 import SeismicBulletin from './pages/SeismicBulletin';
 import InformationReporting from './pages/InformationReporting';
@@ -52,22 +53,24 @@ function Navigation() {
 
 function App() {
   return (
-    <Router>
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-        {/* 页面内容区域 */}
-        <div style={{ flex: 1, overflowY: 'auto', padding: '20px' }}>
-          <Routes>
-            <Route path="/" element={<EarthquakeCatalog />} />
-            <Route path="/seismic-bulletin" element={<SeismicBulletin />} />
-            <Route path="/information-reporting" element={<InformationReporting />} />
-            <Route path="/basic-configuration" element={<BasicConfiguration />} />
-          </Routes>
-        </div>
+    <EventProvider>
+      <Router>
+        <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+          {/* 页面内容区域 */}
+          <div style={{ flex: 1, overflowY: 'auto', padding: '20px' }}>
+            <Routes>
+              <Route path="/" element={<EarthquakeCatalog />} />
+              <Route path="/seismic-bulletin" element={<SeismicBulletin />} />
+              <Route path="/information-reporting" element={<InformationReporting />} />
+              <Route path="/basic-configuration" element={<BasicConfiguration />} />
+            </Routes>
+          </div>
 
-        {/* 底部导航栏 */}
-        <Navigation />
-      </div>
-    </Router>
+          {/* 底部导航栏 */}
+          <Navigation />
+        </div>
+      </Router>
+    </EventProvider>
   );
 }
 
