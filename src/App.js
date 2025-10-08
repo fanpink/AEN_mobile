@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { FaHome, FaBell, FaEnvelope, FaCog } from 'react-icons/fa'; // 引入图标
 import { EventProvider } from './Status_Context'; // 引入 EventProvider
-import EarthquakeCatalog from './pages/EarthquakeCatalog';
+import EarthquakeCatalog from './pages/Event';
 import SeismicBulletin from './pages/SeismicBulletin';
 import InformationReporting from './pages/InformationReporting';
 import BasicConfiguration from './pages/BasicConfiguration';
@@ -18,7 +18,7 @@ function Navigation() {
           color: location.pathname === '/' ? '#ff4500' : '#808080', // 激活状态为橙色，未激活状态为灰色
         }}
       >
-        <FaHome /> 地震目录
+        <FaHome /> 地震事件
       </Link>
       <Link
         to="/seismic-bulletin"

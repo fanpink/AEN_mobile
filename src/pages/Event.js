@@ -1,42 +1,42 @@
 import React, { useState } from 'react';
-import Sub_server_event from './SeismicBulletin/Sub_server_event';
-import Sub_web_clickEvent from './SeismicBulletin/Sub_web_clickEvent';
+import SelectEvent from './Event/SelectEvent';
+import InputEvent from './Event/InputEvent';
 
-// 震情通报
-function SeismicBulletin() {
-  const [activeTab, setActiveTab] = useState('auto'); // 默认选中“自动”标签
+// 地震目录
+function Event() {
+  const [activeTab, setActiveTab] = useState('select'); // 默认选中"地震目录"标签
 
   return (
     <div>
-      <h2>震情通报</h2>
+      <h2>地震事件</h2>
 
       {/* 标签导航 */}
       <div style={styles.tabContainer}>
         <button
           style={{
             ...styles.tab,
-            backgroundColor: activeTab === 'auto' ? '#007bff' : '#f0f0f0',
-            color: activeTab === 'auto' ? '#fff' : '#000',
+            backgroundColor: activeTab === 'select' ? '#007bff' : '#f0f0f0',
+            color: activeTab === 'select' ? '#fff' : '#000',
           }}
-          onClick={() => setActiveTab('auto')}
+          onClick={() => setActiveTab('select')}
         >
-          通报信息
+          地震目录
         </button>
         <button
           style={{
             ...styles.tab,
-            backgroundColor: activeTab === 'manual' ? '#007bff' : '#f0f0f0',
-            color: activeTab === 'manual' ? '#fff' : '#000',
+            backgroundColor: activeTab === 'input' ? '#007bff' : '#f0f0f0',
+            color: activeTab === 'input' ? '#fff' : '#000',
           }}
-          onClick={() => setActiveTab('manual')}
+          onClick={() => setActiveTab('input')}
         >
-         word预览
+          手动输入
         </button>
       </div>
 
       {/* 根据选中的标签显示内容 */}
-      {activeTab === 'auto' && <Sub_server_event />}
-      {activeTab === 'manual' && <Sub_web_clickEvent />}
+      {activeTab === 'select' && <SelectEvent />}
+      {activeTab === 'input' && <InputEvent />}
     </div>
   );
 }
@@ -61,4 +61,4 @@ const styles = {
   },
 };
 
-export default SeismicBulletin;
+export default Event;
