@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Form, Input, Button, DatePicker, InputNumber, message } from 'antd';
 import { SelectEventContext } from '../../Status_Context';
 import moment from 'moment';
@@ -6,6 +7,7 @@ import moment from 'moment';
 const InputEvent = () => {
   const [form] = Form.useForm();
   const { setSelectEqEvent } = useContext(SelectEventContext);
+  const navigate = useNavigate();
 
   const onFinish = (values) => {
     // 格式化日期时间
@@ -25,7 +27,8 @@ const InputEvent = () => {
     // 使用Context更新全局状态
     setSelectEqEvent(earthquakeData);
     
-    message.success('地震信息已保存，可以切换到地震目录查看或进行其他操作');
+    message.success('地震信息已保存，正在跳转到震情通报');
+    navigate('/Reporting');
     
     // 重置表单
     form.resetFields();

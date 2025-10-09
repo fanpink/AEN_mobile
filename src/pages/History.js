@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import Sub_server_event from './SeismicBulletin/Sub_server_event';
-import Sub_web_clickEvent from './SeismicBulletin/Sub_web_clickEvent';
+import EventList from './History/EventList';
+import EventSend from './History/Event_Send';
 
 // 震情通报
-function SeismicBulletin() {
+function History() {
   const [activeTab, setActiveTab] = useState('auto'); // 默认选中“自动”标签
 
   return (
     <div>
-      <h2>震情通报</h2>
+      <h2>通报记录</h2>
 
       {/* 标签导航 */}
       <div style={styles.tabContainer}>
@@ -20,7 +20,7 @@ function SeismicBulletin() {
           }}
           onClick={() => setActiveTab('auto')}
         >
-          通报信息
+          已生成事件列表
         </button>
         <button
           style={{
@@ -30,13 +30,13 @@ function SeismicBulletin() {
           }}
           onClick={() => setActiveTab('manual')}
         >
-         word预览
+         选中事件发送到邮箱
         </button>
       </div>
 
       {/* 根据选中的标签显示内容 */}
-      {activeTab === 'auto' && <Sub_server_event />}
-      {activeTab === 'manual' && <Sub_web_clickEvent />}
+      {activeTab === 'auto' && <EventList />}
+      {activeTab === 'manual' && <EventSend />}
     </div>
   );
 }
@@ -61,4 +61,4 @@ const styles = {
   },
 };
 
-export default SeismicBulletin;
+export default History;

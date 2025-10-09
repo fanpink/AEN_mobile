@@ -36,3 +36,25 @@
     transform: rotate(360deg);
   }
 }
+
+/* 通用页面布局样式 */
+.page {
+  padding: 16px;
+}
+
+.page-header {
+  margin-bottom: 12px;
+}
+
+.page-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.section {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}

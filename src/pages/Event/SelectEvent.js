@@ -1,4 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { SelectEventContext } from '../../Status_Context';
 import earthquakeService from '../../services/earthquakeService';
 
@@ -7,6 +8,7 @@ function SelectEvent() {
   const [earthquakeData, setEarthquakeData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   // 加载地震数据
   const loadEarthquakeData = async () => {
@@ -55,6 +57,7 @@ function SelectEvent() {
     );
     if (confirmSelection) {
       setSelectEqEvent(event); // 更新全局状态
+      navigate('/Reporting'); // 跳转到震情通报，自动展示 ReportInfo
     }
   };
 
