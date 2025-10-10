@@ -5,6 +5,7 @@ import { EventProvider } from './Status_Context'; // 引入 EventProvider
 import Event from './pages/Event';
 import History from './pages/History';
 import Reporting from './pages/Reporting';
+import WordPre from './pages/Reporting/WordPre';
 import Setting from './pages/Setting';
 
 function Navigation() {
@@ -61,6 +62,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Event />} />
               <Route path="/Reporting" element={<Reporting />} />
+              <Route path="/Reporting/WordPre" element={<WordPre />} />
               <Route path="/history" element={<History />} />
               <Route path="/setting" element={<Setting />} />
             </Routes>

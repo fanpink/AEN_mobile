@@ -4,7 +4,8 @@ import WordPre from './Reporting/WordPre';
 
 // 信息报送
 function Reporting() {
-  const [activeTab, setActiveTab] = useState('auto'); // 默认选中“自动”标签
+  const [activeTab, setActiveTab] = useState('auto'); // 默认选中“通报信息”标签
+  const [preview, setPreview] = useState(null); // 保存生成后的预览数据
 
   return (
     <div>
@@ -30,13 +31,27 @@ function Reporting() {
           }}
           onClick={() => setActiveTab('manual')}
         >
-         word预览
+         文件预览
         </button>
       </div>
 
       {/* 根据选中的标签显示内容 */}
-      {activeTab === 'auto' && <ReportInfo />}
-      {activeTab === 'manual' && <WordPre />}
+      {activeTab === 'auto' && (
+        <ReportInfo
+          onGenerated={(data) => {
+            // data 结构：{ docxUrl, pdfUrl, filename }
+            setPreview(data);
+            setActiveTab('manual');
+          }}
+        />
+      )}
+      {activeTab === 'manual' && (
+        <WordPre
+          docxUrl={preview?.docxUrl}
+          pdfUrl={preview?.pdfUrl}
+          filename={preview?.filename}
+        />
+      )}
     </div>
   );
 }
