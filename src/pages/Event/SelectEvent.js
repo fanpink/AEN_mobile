@@ -15,20 +15,21 @@ function SelectEvent() {
     setLoading(true);
     setError(null);
     try {
-      const data = await earthquakeService.getLatestEarthquakeData();
-      
-      // 转换数据格式以适配表格显示
+      // 从后端获取原始地震事件列表
+      const data = await earthquakeService.getAllEarthquakeDataFromServer();
+
+      // 转换数据格式以适配表格显示（后端字段与 CEIC newdata 保持一致）
       const formattedData = data.map((item, index) => ({
         id: (index + 1).toString(),
-        O_TIME: item.time,
-        M: item.magnitude,
-        LOCATION_C: item.title.replace(/发生.*级地震$/, ''), // 提取地点名称
-        EPI_LAT: item.latitude,
-        EPI_LON: item.longitude,
-        EPI_DEPTH: parseFloat(item.depth) || 0,
-        NEW_DID: `CC${item.time.replace(/[-:\s]/g, '')}`
+        O_TIME: item.O_TIME,
+        M: item.M,
+        LOCATION_C: item.LOCATION_C || '未知地点',
+        EPI_LAT: item.EPI_LAT,
+        EPI_LON: item.EPI_LON,
+        EPI_DEPTH: typeof item.EPI_DEPTH === 'number' ? item.EPI_DEPTH : parseFloat(item.EPI_DEPTH) || 0,
+        NEW_DID: item.NEW_DID || `CC${String(item.O_TIME || '').replace(/[-:\s]/g, '')}`,
       }));
-      
+
       setEarthquakeData(formattedData);
     } catch (error) {
       console.error('加载地震数据失败:', error);
