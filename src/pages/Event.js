@@ -34,9 +34,13 @@ function Event() {
         </button>
       </div>
 
-      {/* 根据选中的标签显示内容 */}
-      {activeTab === 'select' && <SelectEvent />}
-      {activeTab === 'input' && <InputEvent />}
+      {/* 保持组件常驻，切换时仅隐藏以保留内部状态 */}
+      <div style={{ display: activeTab === 'select' ? 'block' : 'none' }}>
+        <SelectEvent />
+      </div>
+      <div style={{ display: activeTab === 'input' ? 'block' : 'none' }}>
+        <InputEvent />
+      </div>
     </div>
   );
 }

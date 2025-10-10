@@ -34,9 +34,27 @@ function Setting() {
         </button>
       </div>
 
-      {/* 根据选中的标签显示内容 */}
-      {activeTab === 'config' && <Config />}
-      {activeTab === 'user' && <User />}
+      {/* 保持组件常驻，切换时仅隐藏以保留内部状态 */}
+      <div style={styles.tabContentContainer}>
+        <div
+          style={{
+            ...styles.pane,
+            opacity: activeTab === 'config' ? 1 : 0,
+            pointerEvents: activeTab === 'config' ? 'auto' : 'none',
+          }}
+        >
+          <Config />
+        </div>
+        <div
+          style={{
+            ...styles.pane,
+            opacity: activeTab === 'user' ? 1 : 0,
+            pointerEvents: activeTab === 'user' ? 'auto' : 'none',
+          }}
+        >
+          <User />
+        </div>
+      </div>
     </div>
   );
 }
@@ -58,6 +76,25 @@ const styles = {
     cursor: 'pointer',
     fontSize: '16px',
     textAlign: 'center', // 文本居中
+  },
+  tabContentContainer: {
+    position: 'relative',
+    minHeight: '400px',
+    overflow: 'hidden',
+    border: '1px solid #eee',
+    borderRadius: '6px',
+    marginTop: '10px',
+  },
+  pane: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    overflow: 'auto',
+    transition: 'opacity 0.2s ease-in-out',
+    background: '#fff',
+    padding: '10px',
   },
 };
 

@@ -18,7 +18,7 @@ const InputEvent = () => {
     const timeMatch = text.match(/(\d{4})年(\d{1,2})月(\d{1,2})日(\d{1,2})时(\d{1,2})分(\d{1,2})秒/);
     let dateTimeStr = null;
     if (timeMatch) {
-      const [_, y, mo, d, h, mi, s] = timeMatch;
+      const [, y, mo, d, h, mi, s] = timeMatch;
       const pad = (n) => n.toString().padStart(2, '0');
       dateTimeStr = `${y}-${pad(mo)}-${pad(d)} ${pad(h)}:${pad(mi)}:${pad(s)}`;
     }

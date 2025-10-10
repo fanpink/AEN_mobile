@@ -1,11 +1,31 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SelectEventContext } from '../../Status_Context';
-import earthquakeService from '../../services/earthquakeService';
 
 function SelectEvent() {
   const { setSelectEqEvent } = useContext(SelectEventContext); // 使用 Context
-  const [earthquakeData, setEarthquakeData] = useState([]);
+  // 使用 SessionStorage 持久化列表数据，切换页面直接显示本地数据
+  function useSessionStorage(key, initialValue) {
+    const [value, setValue] = useState(() => {
+      try {
+        const stored = sessionStorage.getItem(key);
+        return stored ? JSON.parse(stored) : initialValue;
+      } catch (_) {
+        return initialValue;
+      }
+    });
+    useEffect(() => {
+      try {
+        sessionStorage.setItem(key, JSON.stringify(value));
+      } catch (_) {
+        // ignore storage write error
+      }
+    }, [key, value]);
+    return [value, setValue];
+  }
+
+  const [earthquakeData, setEarthquakeData] = useSessionStorage('eq_list_cache', []);
+  const [lastUpdated, setLastUpdated] = useSessionStorage('eq_list_cache_time', '');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -15,22 +35,30 @@ function SelectEvent() {
     setLoading(true);
     setError(null);
     try {
-      // 从后端获取原始地震事件列表
-      const data = await earthquakeService.getAllEarthquakeDataFromServer();
+      // 通过 CRA 代理，调用后端 /getceic_all 路由
+      const resp = await fetch('/api/server/getceic_all');
+      if (!resp.ok) {
+        throw new Error(`后端返回错误状态: ${resp.status}`);
+      }
+      const json = await resp.json();
+      const data = Array.isArray(json?.data) ? json.data : [];
 
       // 转换数据格式以适配表格显示（后端字段与 CEIC newdata 保持一致）
       const formattedData = data.map((item, index) => ({
         id: (index + 1).toString(),
-        O_TIME: item.O_TIME,
-        M: item.M,
-        LOCATION_C: item.LOCATION_C || '未知地点',
-        EPI_LAT: item.EPI_LAT,
-        EPI_LON: item.EPI_LON,
-        EPI_DEPTH: typeof item.EPI_DEPTH === 'number' ? item.EPI_DEPTH : parseFloat(item.EPI_DEPTH) || 0,
-        NEW_DID: item.NEW_DID || `CC${String(item.O_TIME || '').replace(/[-:\s]/g, '')}`,
+        O_TIME: item['发震时刻(UTC+8)'] || item.O_TIME,
+        M: item['震级(M)'] ?? item.M,
+        LOCATION_C: item['参考位置'] ?? item.LOCATION_C ?? '未知地点',
+        EPI_LAT: item['纬度(°)'] ?? item.EPI_LAT,
+        EPI_LON: item['经度(°)'] ?? item.EPI_LON,
+        EPI_DEPTH: typeof item['深度(千米)'] === 'number' ? item['深度(千米)'] : (parseFloat(item['深度(千米)']) || 0),
+        NEW_DID: item.NEW_DID || `CC${String((item['发震时刻(UTC+8)'] || item.O_TIME) || '').replace(/[-:\s]/g, '')}`,
       }));
 
       setEarthquakeData(formattedData);
+      try {
+        setLastUpdated(new Date().toISOString());
+      } catch (_) {}
     } catch (error) {
       console.error('加载地震数据失败:', error);
       const errorMessage = error instanceof Error ? error.message : '加载地震数据失败，请稍后重试';
@@ -41,10 +69,16 @@ function SelectEvent() {
     }
   };
 
-  // 组件挂载时加载数据
+  // 组件挂载时：若存在本地缓存则直接展示，不触发自动请求；无缓存时再加载
   useEffect(() => {
+    if (Array.isArray(earthquakeData) && earthquakeData.length > 0) {
+      return; // 已有本地数据，切换到此页即刻显示
+    }
     loadEarthquakeData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // 提供一个软提示：显示上次更新时间
 
   const handleRowClick = (event) => {
     const confirmSelection = window.confirm(
@@ -76,7 +110,7 @@ function SelectEvent() {
           {loading ? '正在加载...' : '刷新数据'}
         </button>
         <span style={styles.statusText}>
-          {loading ? '正在获取最新地震数据...' : '显示最近地震事件'}
+          {loading ? '正在获取最新地震数据...' : '显示最近地震事件'}{lastUpdated ? `（上次更新时间：${new Date(lastUpdated).toLocaleString()}）` : ''}
         </span>
       </div>
 

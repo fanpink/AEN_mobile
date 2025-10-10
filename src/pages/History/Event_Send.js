@@ -9,6 +9,13 @@ function Event_Send() {
   return (
     <div>
       预览选中的信息，确认后发送到邮箱功能
+      {selectEqEvent ? (
+        <pre style={{ marginTop: '12px', background: '#f7f7f7', padding: '8px', borderRadius: '6px' }}>
+          {JSON.stringify(selectEqEvent, null, 2)}
+        </pre>
+      ) : (
+        <div style={{ marginTop: '12px', color: '#888' }}>暂无选中事件</div>
+      )}
     </div>
   );
 }

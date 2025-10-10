@@ -1,9 +1,10 @@
 import axios from 'axios';
+import { getServerBase } from './serverBase';
 
 class EarthquakeService {
   constructor() {
-    // 使用 CRA 开发代理将该路径转发到后端 http://localhost:5000
-    this.SERVER_BASE = '/api/server';
+    // 后端基址：开发环境走代理，其它环境直连
+    this.SERVER_BASE = getServerBase();
   }
 
   /**
