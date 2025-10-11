@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import EventList from './History/EventList';
 import EventSend from './History/Event_Send';
+import { SelectedReportContext } from '../Status_Context';
 
 // 震情通报
 function History() {
   const [activeTab, setActiveTab] = useState('auto'); // 默认选中“自动”标签
+  const { setSelectedReportName } = useContext(SelectedReportContext);
 
   return (
     <div>
@@ -35,7 +37,18 @@ function History() {
       </div>
 
       {/* 根据选中的标签显示内容 */}
-      {activeTab === 'auto' && <EventList />}
+      {activeTab === 'auto' && (
+        <EventList
+          onSend={(name) => {
+            if (name) {
+              try {
+                setSelectedReportName(name);
+              } catch (_) {}
+              setActiveTab('manual');
+            }
+          }}
+        />
+      )}
       {activeTab === 'manual' && <EventSend />}
     </div>
   );

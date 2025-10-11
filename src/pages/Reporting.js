@@ -7,7 +7,7 @@ import { makeUrl } from '../services/serverBase';
 function Reporting() {
   const [activeTab, setActiveTab] = useState('auto'); // 默认选中“通报信息”标签
   const [preview, setPreview] = useState(null); // 保存生成后的预览数据
-  const [configData, setConfigData] = useState(null); // 后端配置（期号、政府风管领导等）
+  const [configData, setConfigData] = useState(null); // 后端配置（期号、政府分管领导等）
 
   // 页面挂载时尝试恢复预览数据，避免返回后丢失
   useEffect(() => {
@@ -20,21 +20,12 @@ function Reporting() {
     } catch (_) {}
   }, []);
 
-  // 启动页面时读取后端配置并在本地保存（即使已有缓存，也拉取最新），供 ReportInfo 使用期号与政府风管领导
+  // 启动页面时读取后端配置并在本地保存（即使已有缓存，也拉取最新），供 ReportInfo 使用期号与分管领导
   useEffect(() => {
     const normalizeConfig = (data) => {
-      try {
-        if (!data || typeof data !== 'object') return data;
-        const d = { ...data };
-        // 兼容旧键：将“政府风管领导”统一归一化为“政府分管领导”
-        if (typeof d['政府分管领导'] === 'undefined' && typeof d['政府风管领导'] !== 'undefined') {
-          d['政府分管领导'] = d['政府风管领导'];
-          delete d['政府风管领导'];
-        }
-        return d;
-      } catch (_) {
-        return data;
-      }
+      // 后端已统一返回规范键：期号、分管领导、报送最小烈度、服务位置
+      if (!data || typeof data !== 'object') return data;
+      return { ...data };
     };
     // 先同步展示会话缓存，随后拉取最新配置覆盖
     try {
