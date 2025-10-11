@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Config from './Setting/Config';
 import User from './Setting/User';
+import Help from './Setting/Help';
 
 // 基础配置
 function Setting() {
@@ -20,7 +21,17 @@ function Setting() {
           }}
           onClick={() => setActiveTab('config')}
         >
-          基础配置
+          参数配置
+        </button>
+        <button
+          style={{
+            ...styles.tab,
+            backgroundColor: activeTab === 'help' ? '#007bff' : '#f0f0f0',
+            color: activeTab === 'help' ? '#fff' : '#000',
+          }}
+          onClick={() => setActiveTab('help')}
+        >
+          报送说明
         </button>
         <button
           style={{
@@ -38,6 +49,9 @@ function Setting() {
       <div style={styles.tabContentContainer}>
         <div style={{ ...styles.pane, display: activeTab === 'config' ? 'block' : 'none' }}>
           <Config />
+        </div>
+        <div style={{ ...styles.pane, display: activeTab === 'help' ? 'block' : 'none' }}>
+          <Help />
         </div>
         <div style={{ ...styles.pane, display: activeTab === 'user' ? 'block' : 'none' }}>
           <User />

@@ -98,8 +98,7 @@ function SelectEvent() {
 
   return (
     <div style={styles.container}>
-      <h2>地震目录</h2>
-      
+      <h2>从地震目录选择</h2>
       {/* 刷新按钮和状态显示 */}
       <div style={styles.toolbar}>
         <button 

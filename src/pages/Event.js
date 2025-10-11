@@ -8,7 +8,7 @@ function Event() {
 
   return (
     <div>
-      <h2>地震事件</h2>
+      <h2>烈度评估</h2>
 
       {/* 标签导航 */}
       <div style={styles.tabContainer}>
@@ -20,7 +20,7 @@ function Event() {
           }}
           onClick={() => setActiveTab('select')}
         >
-          地震目录
+          目录选择
         </button>
         <button
           style={{

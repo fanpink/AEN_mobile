@@ -55,7 +55,7 @@ function Reporting() {
 
   return (
     <div>
-      <h2>震情通报</h2>
+      <h2>报告生成</h2>
 
       {/* 标签导航 */}
       <div style={styles.tabContainer}>

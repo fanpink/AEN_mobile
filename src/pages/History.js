@@ -10,7 +10,7 @@ function History() {
 
   return (
     <div>
-      <h2>通报记录</h2>
+      <h2>快速报送</h2>
 
       {/* 标签导航 */}
       <div style={styles.tabContainer}>
@@ -32,7 +32,7 @@ function History() {
           }}
           onClick={() => setActiveTab('manual')}
         >
-         选中事件发送到邮箱
+         发送选中事件到邮箱
         </button>
       </div>
 

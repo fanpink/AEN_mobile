@@ -20,7 +20,7 @@ function Navigation() {
           color: isActive ? '#ff4500' : '#808080',
         })}
       >
-        <FaHome /> 地震事件
+        <FaHome /> 烈度评估
       </NavLink>
       <NavLink
         to="/Reporting"
@@ -29,7 +29,7 @@ function Navigation() {
           color: isActive ? '#ff4500' : '#808080',
         })}
       >
-        <FaBell /> 震情通报
+        <FaBell /> 报告生成
       </NavLink>
       <NavLink
         to="/History"
@@ -38,7 +38,7 @@ function Navigation() {
           color: isActive ? '#ff4500' : '#808080',
         })}
       >
-        <FaEnvelope /> 历史记录
+        <FaEnvelope /> 快速报送
       </NavLink>
       <NavLink
         to="/Setting"
