@@ -47,6 +47,11 @@ function Config() {
   const [editEqsj, setEditEqsj] = useState({ 联系人: '', 邮箱: '' });
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
 
+  // 发送邮箱参数配置（send-email-config.json）
+  const [sendEmailConfig, setSendEmailConfig] = useState({ server: '', account: '', send_name: '', password: '' });
+  const [sendEmailStatus, setSendEmailStatus] = useState('idle'); // idle | loading | saving | success | error
+  const [sendEmailError, setSendEmailError] = useState('');
+
   // 启动时总是读取后端配置（即使存在本地缓存），确保页面显示服务端内容；成功后写入会话缓存
   useEffect(() => {
     (async () => {
@@ -113,6 +118,55 @@ function Config() {
       }
     })();
   }, []);
+
+  // 读取发送邮箱参数配置
+  useEffect(() => {
+    (async () => {
+      setSendEmailStatus('loading');
+      setSendEmailError('');
+      try {
+        const resp = await fetch(makeUrl('/config/send-email-config'));
+        const json = await resp.json();
+        if (json?.status === 'success' && json?.data) {
+          setSendEmailConfig({
+            server: json.data.server || '',
+            account: json.data.account || '',
+            send_name: json.data.send_name || '',
+            password: json.data.password || '',
+          });
+          setSendEmailStatus('idle');
+        } else {
+          throw new Error(json?.message || '读取发送邮箱参数配置失败');
+        }
+      } catch (e) {
+        setSendEmailStatus('error');
+        setSendEmailError(e?.message || '读取发送邮箱参数配置失败');
+      }
+    })();
+  }, []);
+
+  // 监听“配置刷新”事件：无干扰地刷新后端配置，仅更新期号等配置字段
+  useEffect(() => {
+    const handler = () => {
+      (async () => {
+        try {
+          const resp = await fetch(makeUrl('/config/report'));
+          const json = await resp.json();
+          if (json?.status === 'success' && json?.data) {
+            const d = { ...json.data };
+            setConfig(d);
+            try {
+              sessionStorage.setItem('report_config', JSON.stringify(d));
+            } catch (_) {}
+          }
+        } catch (_) {
+          // 静默失败，不影响当前页面状态
+        }
+      })();
+    };
+    window.addEventListener('report-config-refresh', handler);
+    return () => window.removeEventListener('report-config-refresh', handler);
+  }, [setConfig]);
 
   const handleChange = (key, nested) => (e) => {
     const val = e.target.value;
@@ -251,6 +305,41 @@ function Config() {
     } catch (e) {
       setStatusEqsj('error');
       setErrorEqsj(e?.message || '保存邮箱列表失败');
+    }
+  };
+
+  // 保存发送邮箱参数配置到后端
+  const handleSaveSendEmailConfig = async () => {
+    setSendEmailStatus('saving');
+    setSendEmailError('');
+    try {
+      const payload = {
+        server: String(sendEmailConfig.server || ''),
+        account: String(sendEmailConfig.account || ''),
+        send_name: String(sendEmailConfig.send_name || ''),
+        password: String(sendEmailConfig.password || ''),
+      };
+      const resp = await fetch(makeUrl('/config/send-email-config'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const json = await resp.json();
+      if (json?.status === 'success' && json?.data) {
+        setSendEmailConfig({
+          server: json.data.server || '',
+          account: json.data.account || '',
+          send_name: json.data.send_name || '',
+          password: json.data.password || '',
+        });
+        setSendEmailStatus('success');
+        setTimeout(() => setSendEmailStatus('idle'), 1200);
+      } else {
+        throw new Error(json?.message || '保存发送邮箱参数配置失败');
+      }
+    } catch (e) {
+      setSendEmailStatus('error');
+      setSendEmailError(e?.message || '保存发送邮箱参数配置失败');
     }
   };
 
@@ -466,6 +555,65 @@ function Config() {
             </div>
           </div>
         )}
+      </div>
+
+      {/* 发送邮箱参数配置模块 */}
+      <div style={{ ...sectionStyle, marginTop: 24 }}>
+        <h3>发送邮箱参数配置</h3>
+        <div style={{ marginTop: 8, padding: '8px 12px', background: '#fffbe6', border: '1px solid #ffe58f', color: '#ad6800', borderRadius: 6 }}>
+          注意：此配置信息不可随便修改，错误将导致邮件无法发送。修改前请确认账号与授权码有效。
+        </div>
+        {sendEmailStatus === 'loading' && <div>正在读取发送邮箱参数配置...</div>}
+        {sendEmailStatus === 'error' && <div style={{ color: 'red' }}>读取/保存失败：{sendEmailError}</div>}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 12, alignItems: 'center' }}>
+          <label style={{ display: 'contents' }}>
+            <div style={{ color: '#666' }}>邮件服务器</div>
+            <input
+              type="text"
+              value={sendEmailConfig.server}
+              onChange={(e) => setSendEmailConfig((p) => ({ ...p, server: e.target.value }))}
+              placeholder="smtp.163.com"
+              style={{ width: '100%' }}
+            />
+          </label>
+          <label style={{ display: 'contents' }}>
+            <div style={{ color: '#666' }}>发件账号</div>
+            <input
+              type="email"
+              value={sendEmailConfig.account}
+              onChange={(e) => setSendEmailConfig((p) => ({ ...p, account: e.target.value }))}
+              placeholder="example@163.com"
+              style={{ width: '100%' }}
+            />
+          </label>
+          <label style={{ display: 'contents' }}>
+            <div style={{ color: '#666' }}>发件显示名称</div>
+            <input
+              type="text"
+              value={sendEmailConfig.send_name}
+              onChange={(e) => setSendEmailConfig((p) => ({ ...p, send_name: e.target.value }))}
+              placeholder="绥江县防震减灾局"
+              style={{ width: '100%' }}
+            />
+          </label>
+          <label style={{ display: 'contents' }}>
+            <div style={{ color: '#666' }}>授权密码/Token</div>
+            <input
+              type="password"
+              value={sendEmailConfig.password}
+              onChange={(e) => setSendEmailConfig((p) => ({ ...p, password: e.target.value }))}
+              placeholder="请输入邮箱授权码"
+              style={{ width: '100%' }}
+            />
+          </label>
+        </div>
+        <div style={{ marginTop: 12, display: 'flex', gap: 12, alignItems: 'center' }}>
+          <button onClick={handleSaveSendEmailConfig} disabled={sendEmailStatus === 'saving'} style={{ padding: '8px 12px' }}>
+            {sendEmailStatus === 'saving' ? '保存中...' : '保存发送邮箱参数'}
+          </button>
+          {sendEmailStatus === 'success' && <span style={{ color: '#52c41a' }}>保存成功</span>}
+          {sendEmailStatus === 'error' && <span style={{ color: 'red' }}>保存失败：{sendEmailError}</span>}
+        </div>
       </div>
 
       {/* 绥江县防震减灾局干部职工邮箱配置模块 */}

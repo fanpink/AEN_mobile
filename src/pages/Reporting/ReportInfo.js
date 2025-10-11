@@ -152,6 +152,19 @@ function ReportInfo({ onGenerated, configData }) {
           pdfUrl: data.pdf_url ? makeUrl(data.pdf_url) : '',
           filename: data.filename,
         });
+
+        // 成功生成后：刷新后端配置并广播更新事件（用于设置页同步“期号”）
+        try {
+          const cfgResp = await fetch(makeUrl('/config/report'));
+          const cfgJson = await cfgResp.json();
+          if (cfgJson?.status === 'success' && cfgJson?.data) {
+            try {
+              sessionStorage.setItem('report_config', JSON.stringify(cfgJson.data));
+            } catch (_) {}
+            // 通知其他页面/组件刷新配置（保持页面其他状态不变）
+            window.dispatchEvent(new CustomEvent('report-config-refresh', { detail: { source: 'ReportInfo' } }));
+          }
+        } catch (_) {}
       } else {
         setStatus('error');
         setError(data?.message || '生成失败');
