@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import SelectEvent from './Event/SelectEvent';
 import InputEvent from './Event/InputEvent';
+import BreakingNews from './Event/BreakingNews';
 
 // 地震目录
 function Event() {
@@ -20,8 +21,9 @@ function Event() {
           }}
           onClick={() => setActiveTab('select')}
         >
-          目录选择
+          在线选择
         </button>
+        
         <button
           style={{
             ...styles.tab,
@@ -32,6 +34,16 @@ function Event() {
         >
           手动输入
         </button>
+        <button
+          style={{
+            ...styles.tab,
+            backgroundColor: activeTab === 'breakingNews' ? '#007bff' : '#f0f0f0',
+            color: activeTab === 'breakingNews' ? '#fff' : '#000',
+          }}
+          onClick={() => setActiveTab('breakingNews')}
+        >
+          快报、速报处理
+        </button>
       </div>
 
       {/* 保持组件常驻，切换时仅隐藏以保留内部状态 */}
@@ -40,6 +52,9 @@ function Event() {
       </div>
       <div style={{ display: activeTab === 'input' ? 'block' : 'none' }}>
         <InputEvent />
+      </div>
+      <div style={{ display: activeTab === 'breakingNews' ? 'block' : 'none' }}>
+        <BreakingNews />
       </div>
     </div>
   );
