@@ -32,7 +32,7 @@ function Event() {
           }}
           onClick={() => setActiveTab('input')}
         >
-          手动输入
+          正式测定<br/>手动输入
         </button>
         <button
           style={{
