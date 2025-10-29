@@ -33,7 +33,7 @@ function BreakingNews() {
     // 输入示例：2025年10月11日11时18分15秒
     const m = cn.match(/(\d{4})年(\d{1,2})月(\d{1,2})日\s*(\d{1,2})时(\d{1,2})分(\d{1,2})秒/);
     if (!m) return '';
-    const [_, y, mo, d, h, mi, s] = m;
+    const [, y, mo, d, h, mi, s] = m;
     const pad = (n) => String(n).padStart(2, '0');
     return `${y}-${pad(mo)}-${pad(d)} ${pad(h)}:${pad(mi)}:${pad(s)}`;
   }

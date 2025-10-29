@@ -90,17 +90,17 @@ function ReportInfo({ onGenerated, configData }) {
   useEffect(() => {
     if (configData && form) {
       const leaderFromConfig = getLeaderFromConfig(configData);
-      const next = {
-        ...form,
-        期号: typeof configData['期号'] !== 'undefined' ? configData['期号'] : form['期号'],
-        分管领导: typeof leaderFromConfig !== 'undefined' ? leaderFromConfig : form['分管领导'],
-      };
-      setForm(next);
-      try {
-        sessionStorage.setItem(STORAGE_FORM_KEY, JSON.stringify(next));
-      } catch (_) {}
+      const newQihao = typeof configData['期号'] !== 'undefined' ? configData['期号'] : form['期号'];
+      const newLeader = typeof leaderFromConfig !== 'undefined' ? leaderFromConfig : form['分管领导'];
+      if (newQihao !== form['期号'] || newLeader !== form['分管领导']) {
+        const next = { ...form, 期号: newQihao, 分管领导: newLeader };
+        setForm(next);
+        try {
+          sessionStorage.setItem(STORAGE_FORM_KEY, JSON.stringify(next));
+        } catch (_) {}
+      }
     }
-  }, [configData]);
+  }, [configData, form]);
 
   // 表单内容变化时更新缓存
   useEffect(() => {

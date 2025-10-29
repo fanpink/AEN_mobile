@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, NavLink } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, NavLink, useLocation } from 'react-router-dom';
 import { FaHome, FaBell, FaEnvelope, FaCog } from 'react-icons/fa'; // 引入图标
 import { EventProvider } from './Status_Context'; // 引入 EventProvider
 import Event from './pages/Event';
@@ -8,6 +8,8 @@ import Reporting from './pages/Reporting';
 import WordPre from './pages/Reporting/WordPre';
 import Setting from './pages/Setting';
 import { makeUrl } from './services/serverBase';
+import Login from './pages/Login';
+import RequireAuth from './components/RequireAuth';
 
 function Navigation() {
   return (
@@ -57,49 +59,57 @@ function App() {
   return (
     <EventProvider>
       <Router>
-        <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-          {/* 页面内容区域 */}
-          <div style={{ flex: 1, overflowY: 'auto', padding: '20px' }}>
-            {/* 应用启动时全局读取一次配置并缓存到会话，供各页面使用 */}
-            {(() => {
-              try {
-                // 在顶层触发一次配置读取
-                // 使用副作用钩子以避免多次执行
-                // 这里通过自执行函数配合 useEffect 实现
-              } catch (_) {}
-            })()}
-            {useEffect(() => {
-              (async () => {
-                try {
-                  const resp = await fetch(makeUrl('/config/report'));
-                  const json = await resp.json();
-                  if (json?.status === 'success' && json?.data) {
-                    try {
-                      sessionStorage.setItem('report_config', JSON.stringify(json.data));
-                      if (typeof window !== 'undefined') {
-                        window.__AEN_config__ = json.data;
-                      }
-                    } catch (_) {}
-                  }
-                } catch (_) {
-                  // 忽略错误，页面级读取会兜底
-                }
-              })();
-            }, [])}
-            <Routes>
-              <Route path="/" element={<Event />} />
-              <Route path="/Reporting" element={<Reporting />} />
-              <Route path="/Reporting/WordPre" element={<WordPre />} />
-              <Route path="/history" element={<History />} />
-              <Route path="/setting" element={<Setting />} />
-            </Routes>
-          </div>
-
-          {/* 底部导航栏 */}
-          <Navigation />
-        </div>
+        <AppShell />
       </Router>
     </EventProvider>
+  );
+}
+
+function AppShell() {
+  const location = useLocation();
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+      {/* 页面内容区域 */}
+      <div style={{ flex: 1, overflowY: 'auto', padding: '20px' }}>
+        {/* 应用启动时全局读取一次配置并缓存到会话，供各页面使用 */}
+        {(() => {
+          try {
+            // 在顶层触发一次配置读取
+            // 使用副作用钩子以避免多次执行
+            // 这里通过自执行函数配合 useEffect 实现
+          } catch (_) {}
+        })()}
+        {useEffect(() => {
+          (async () => {
+            try {
+              const resp = await fetch(makeUrl('/config/report'));
+              const json = await resp.json();
+              if (json?.status === 'success' && json?.data) {
+                try {
+                  sessionStorage.setItem('report_config', JSON.stringify(json.data));
+                  if (typeof window !== 'undefined') {
+                    window.__AEN_config__ = json.data;
+                  }
+                } catch (_) {}
+              }
+            } catch (_) {
+              // 忽略错误，页面级读取会兜底
+            }
+          })();
+        }, [])}
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<RequireAuth><Event /></RequireAuth>} />
+          <Route path="/Reporting" element={<RequireAuth><Reporting /></RequireAuth>} />
+          <Route path="/Reporting/WordPre" element={<RequireAuth><WordPre /></RequireAuth>} />
+          <Route path="/history" element={<RequireAuth><History /></RequireAuth>} />
+          <Route path="/setting" element={<RequireAuth><Setting /></RequireAuth>} />
+        </Routes>
+      </div>
+
+      {/* 底部导航栏（登录页隐藏） */}
+      {location.pathname !== '/login' && <Navigation />}
+    </div>
   );
 }
 

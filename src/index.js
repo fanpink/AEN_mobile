@@ -3,6 +3,15 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import axios from 'axios';
+
+// 设置默认 Authorization 头（若登录已存在令牌）
+try {
+  const token = sessionStorage.getItem('auth_token');
+  if (token) {
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  }
+} catch (_) {}
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

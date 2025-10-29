@@ -36,7 +36,7 @@ function Config() {
   const [showEdit3e, setShowEdit3e] = useState(false);
   const [edit3e, setEdit3e] = useState({ 联系人: '', 电话: '', 邮箱: '' });
 
-  // 绥江县防震减灾局干部职工邮箱配置（email-list-eqsj.json）
+  // 绥江县防震减灾局дето邮箱配置（email-list-eqsj.json）
   const [contactsEqsj, setContactsEqsj] = useState({ list: [] });
   const [statusEqsj, setStatusEqsj] = useState('idle'); // idle | loading | saving | success | error
   const [errorEqsj, setErrorEqsj] = useState('');
@@ -98,7 +98,7 @@ function Config() {
     })();
   }, []);
 
-  // 读取绥江县防震减灾局干部职工邮箱列表
+  // 读取绥江县防震减灾局дето邮箱列表
   useEffect(() => {
     (async () => {
       setStatusEqsj('loading');
@@ -193,7 +193,8 @@ function Config() {
     marginTop: 12,
     background: '#fff',
   };
-  // 修改联系方式字段
+  // 修改联系方式字段（未使用，注释保留以备后续启用）
+  /*
   const handleContactChange = (idx, key) => (e) => {
     const val = e.target.value;
     setContacts3e((prev) => {
@@ -202,8 +203,10 @@ function Config() {
       return { list: nextList };
     });
   };
+  */
 
-  // 修改 EQSJ 邮箱列表字段（保留占位，不在列表中直接编辑）
+  // 修改 EQSJ 邮箱列表字段（保留占位，不在列表中直接编辑，未使用）
+  /*
   const handleEqsjChange = (idx, key) => (e) => {
     const val = e.target.value;
     setContactsEqsj((prev) => {
@@ -212,6 +215,7 @@ function Config() {
       return { list: next };
     });
   };
+  */
 
   // 保存联系方式到后端（支持直接传入最新列表以避免异步状态竞争）
   const handleSaveContacts = async (overrideList) => {
@@ -616,9 +620,9 @@ function Config() {
         </div>
       </div>
 
-      {/* 绥江县防震减灾局干部职工邮箱配置模块 */}
+      {/* 绥江县防震减灾局дето邮箱配置模块 */}
       <div style={{ ...sectionStyle, marginTop: 24 }}>
-        <h3>绥江县防震减灾局干部职工邮箱配置</h3>
+        <h3>绥江县防震减灾局дето邮箱配置</h3>
         {statusEqsj === 'loading' && <div>正在读取邮箱列表...</div>}
         {statusEqsj === 'error' && <div style={{ color: 'red' }}>读取失败：{errorEqsj}</div>}
         <div style={{ display: 'grid', gridTemplateColumns: '36px 48px 1fr 1fr', gap: 12, alignItems: 'start', overflowX: 'hidden' }}>
