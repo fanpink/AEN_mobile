@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SelectEventContext } from '../../Status_Context';
+import { makeUrl } from '../../services/serverBase';
 
 function SelectEvent() {
   const { setSelectEqEvent } = useContext(SelectEventContext); // 使用 Context
@@ -35,8 +36,8 @@ function SelectEvent() {
     setLoading(true);
     setError(null);
     try {
-      // 通过 CRA 代理，调用后端 /getceic_all 路由
-      const resp = await fetch('/api/server/getceic_all');
+      // 通过环境配置的后端基址调用后端 /getceic_all 路由
+      const resp = await fetch(makeUrl('/getceic_all'));
       if (!resp.ok) {
         throw new Error(`后端返回错误状态: ${resp.status}`);
       }

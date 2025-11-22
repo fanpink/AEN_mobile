@@ -1,10 +1,10 @@
 import axios from 'axios';
-import { getServerBase } from './serverBase';
+import { makeUrl } from './serverBase';
 
 class EarthquakeService {
   constructor() {
-    // 后端基址：开发环境走代理，其它环境直连
-    this.SERVER_BASE = getServerBase();
+    // 后端基址由环境变量控制，使用 makeUrl 来构造完整 URL
+    this.SERVER_BASE = null;
   }
 
   /**
@@ -13,7 +13,8 @@ class EarthquakeService {
    */
   async getAllEarthquakeDataFromServer() {
     try {
-      const res = await axios.get(`${this.SERVER_BASE}/getceic_all`, { timeout: 15000 });
+      const url = makeUrl('/getceic_all');
+      const res = await axios.get(url, { timeout: 15000 });
       const payload = res.data;
       if (payload && payload.success && Array.isArray(payload.data)) {
         return payload.data;
