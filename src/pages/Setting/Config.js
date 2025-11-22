@@ -36,7 +36,7 @@ function Config() {
   const [showEdit3e, setShowEdit3e] = useState(false);
   const [edit3e, setEdit3e] = useState({ 联系人: '', 电话: '', 邮箱: '' });
 
-  // 绥江县防震减灾局дето邮箱配置（email-list-eqsj.json）
+  // 绥江县防震减灾局自动发送邮箱配置（email-list-eqsj.json）
   const [contactsEqsj, setContactsEqsj] = useState({ list: [] });
   const [statusEqsj, setStatusEqsj] = useState('idle'); // idle | loading | saving | success | error
   const [errorEqsj, setErrorEqsj] = useState('');
@@ -51,6 +51,36 @@ function Config() {
   const [sendEmailConfig, setSendEmailConfig] = useState({ server: '', account: '', send_name: '', password: '' });
   const [sendEmailStatus, setSendEmailStatus] = useState('idle'); // idle | loading | saving | success | error
   const [sendEmailError, setSendEmailError] = useState('');
+  // 当前登录用户（从 sessionStorage 读取）
+  const [currentUser, setCurrentUser] = useState(() => {
+    try {
+      const s = sessionStorage.getItem('auth_user');
+      return s ? JSON.parse(s) : null;
+    } catch (_) {
+      return null;
+    }
+  });
+
+  useEffect(() => {
+    const handler = () => {
+      try {
+        const s = sessionStorage.getItem('auth_user');
+        setCurrentUser(s ? JSON.parse(s) : null);
+      } catch (_) {
+        setCurrentUser(null);
+      }
+    };
+    window.addEventListener('storage', handler);
+    return () => window.removeEventListener('storage', handler);
+  }, []);
+
+  const canEditSendEmail = useMemo(() => {
+    try {
+      return !!(currentUser && String(currentUser.职务 || '') === '管理员');
+    } catch (_) {
+      return false;
+    }
+  }, [currentUser]);
 
   // 启动时总是读取后端配置（即使存在本地缓存），确保页面显示服务端内容；成功后写入会话缓存
   useEffect(() => {
@@ -314,6 +344,11 @@ function Config() {
 
   // 保存发送邮箱参数配置到后端
   const handleSaveSendEmailConfig = async () => {
+    // 权限校验（前端保护）
+    if (!canEditSendEmail) {
+      setSendEmailError('只有职务为“管理员”的用户可修改该配置。');
+      return;
+    }
     setSendEmailStatus('saving');
     setSendEmailError('');
     try {
@@ -569,6 +604,13 @@ function Config() {
         </div>
         {sendEmailStatus === 'loading' && <div>正在读取发送邮箱参数配置...</div>}
         {sendEmailStatus === 'error' && <div style={{ color: 'red' }}>读取/保存失败：{sendEmailError}</div>}
+        <div style={{ marginTop: 8 }}>
+          {!canEditSendEmail && (
+            <div style={{ marginBottom: 8, color: '#8c8c8c' }}>
+              仅 <strong>管理员</strong> 可修改发送邮箱参数。当前：{currentUser ? (currentUser.职务 || currentUser.name) : '未登录'}
+            </div>
+          )}
+        </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 12, alignItems: 'center' }}>
           <label style={{ display: 'contents' }}>
             <div style={{ color: '#666' }}>邮件服务器</div>
@@ -576,6 +618,7 @@ function Config() {
               type="text"
               value={sendEmailConfig.server}
               onChange={(e) => setSendEmailConfig((p) => ({ ...p, server: e.target.value }))}
+              disabled={!canEditSendEmail}
               placeholder="smtp.163.com"
               style={{ width: '100%' }}
             />
@@ -586,6 +629,7 @@ function Config() {
               type="email"
               value={sendEmailConfig.account}
               onChange={(e) => setSendEmailConfig((p) => ({ ...p, account: e.target.value }))}
+              disabled={!canEditSendEmail}
               placeholder="example@163.com"
               style={{ width: '100%' }}
             />
@@ -596,6 +640,7 @@ function Config() {
               type="text"
               value={sendEmailConfig.send_name}
               onChange={(e) => setSendEmailConfig((p) => ({ ...p, send_name: e.target.value }))}
+              disabled={!canEditSendEmail}
               placeholder="绥江县防震减灾局"
               style={{ width: '100%' }}
             />
@@ -606,15 +651,17 @@ function Config() {
               type="password"
               value={sendEmailConfig.password}
               onChange={(e) => setSendEmailConfig((p) => ({ ...p, password: e.target.value }))}
+              disabled={!canEditSendEmail}
               placeholder="请输入邮箱授权码"
               style={{ width: '100%' }}
             />
           </label>
         </div>
         <div style={{ marginTop: 12, display: 'flex', gap: 12, alignItems: 'center' }}>
-          <button onClick={handleSaveSendEmailConfig} disabled={sendEmailStatus === 'saving'} style={{ padding: '8px 12px' }}>
+          <button onClick={handleSaveSendEmailConfig} disabled={sendEmailStatus === 'saving' || !canEditSendEmail} style={{ padding: '8px 12px' }}>
             {sendEmailStatus === 'saving' ? '保存中...' : '保存发送邮箱参数'}
           </button>
+          {!canEditSendEmail && <span style={{ color: '#8c8c8c' }}>无修改权限</span>}
           {sendEmailStatus === 'success' && <span style={{ color: '#52c41a' }}>保存成功</span>}
           {sendEmailStatus === 'error' && <span style={{ color: 'red' }}>保存失败：{sendEmailError}</span>}
         </div>

@@ -16,9 +16,17 @@ class EarthquakeService {
       const url = makeUrl('/getceic_all');
       const res = await axios.get(url, { timeout: 15000 });
       const payload = res.data;
-      if (payload && payload.success && Array.isArray(payload.data)) {
+      // 后端返回格式为 { status: 'success', data: [...] }
+      // 兼容性处理：支持多种情况
+      if (!payload) return [];
+      // 1) 若后端直接返回数组
+      if (Array.isArray(payload)) return payload;
+      // 2) 若后端返回 { status: 'success', data: [...] }
+      if (Array.isArray(payload.data) && (String(payload.status) === 'success' || payload.success === true)) {
         return payload.data;
       }
+      // 3) 宽松回退：只要 payload.data 是数组就返回（兼容老接口）
+      if (Array.isArray(payload.data)) return payload.data;
       return [];
     } catch (error) {
       console.error('后端地震数据获取失败:', error);

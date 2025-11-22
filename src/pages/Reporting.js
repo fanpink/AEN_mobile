@@ -126,6 +126,12 @@ const styles = {
     justifyContent: 'space-between', // 标签之间均匀分布
     marginBottom: '20px',
     width: '100%', // 宽度填充父容器
+    position: 'sticky',
+    top: 0,
+    zIndex: 999,
+    background: '#fff',
+    padding: '10px 0',
+    boxShadow: '0 1px 6px rgba(0,0,0,0.06)'
   },
   tab: {
     flex: 1, // 每个标签平分宽度
