@@ -1,3 +1,18 @@
+# 重点
+
+#如果前端编译前一点要先修改服务地址
+
+**修改位置：**
+```AEN_mobile\src\services\serverBase.js
+  // 若未进入上面两种情况，则使用默认后端地址（直接访问，不使用代理）
+  const DEFAULT_BASE = 'http://eqsuijiang.wicp.vip:47778';
+  return DEFAULT_BASE;
+}
+```
+
+```AEN_mobile\src\setupproxy.js
+    const rawTarget = process.env.REACT_APP_SERVER_BASE || 'http://eqsuijiang.wicp.vip:47778';
+```
 # 使用 Create React App 入门
 
 此项目是使用 [Create React App](https://github.com/facebook/create-react-app) 引导创建的。
