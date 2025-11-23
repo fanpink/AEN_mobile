@@ -7,7 +7,9 @@ module.exports = function (app) {
     const useProxy = String(process.env.REACT_APP_USE_PROXY || '').toLowerCase() === 'true';
     if (!useProxy) return; // no-op when proxy disabled
 
+    // const rawTarget = process.env.REACT_APP_SERVER_BASE || 'http://192.168.10.38:5000';
     const rawTarget = process.env.REACT_APP_SERVER_BASE || 'http://eqsuijiang.wicp.vip:47778';
+
     const target = String(rawTarget).replace(/\/$/, '');
 
     app.use(
