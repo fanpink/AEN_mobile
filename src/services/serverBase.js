@@ -23,8 +23,8 @@ export function getServerBase() {
   } catch (_) {}
 
   // 若未进入上面两种情况，则使用默认后端地址（直接访问，不使用代理）
-  // const DEFAULT_BASE = 'http://192.168.10.38:5000';
-  const DEFAULT_BASE = 'http://eqsuijiang.wicp.vip:47778';
+  const DEFAULT_BASE = 'http://192.168.10.38:5000';
+  // const DEFAULT_BASE = 'http://eqsuijiang.wicp.vip:47778';
   return DEFAULT_BASE;
 }
 
