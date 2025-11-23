@@ -1,16 +1,10 @@
 const { createProxyMiddleware } = require('http-proxy-middleware');
+const DEFAULT_SERVER_BASE = require('./services/serverhost.js').default;
 
-// 可选 CRA 开发代理：根据环境变量 REACT_APP_USE_PROXY 控制是否启用
-// 若启用，代理目标由 REACT_APP_SERVER_BASE 决定（回退到默认地址）
+// 开发代理：统一使用 serverhost.js 中的配置
 module.exports = function (app) {
   try {
-    const useProxy = String(process.env.REACT_APP_USE_PROXY || '').toLowerCase() === 'true';
-    if (!useProxy) return; // no-op when proxy disabled
-
-    const rawTarget = process.env.REACT_APP_SERVER_BASE || 'http://192.168.10.38:5000';
-    // const rawTarget = process.env.REACT_APP_SERVER_BASE || 'http://eqsuijiang.wicp.vip:47778';
-
-    const target = String(rawTarget).replace(/\/$/, '');
+    const target = String(DEFAULT_SERVER_BASE).replace(/\/$/, '');
 
     app.use(
       '/api/server',
