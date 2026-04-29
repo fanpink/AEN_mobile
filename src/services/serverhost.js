@@ -1,10 +1,7 @@
 // 服务端地址统一配置
 // 在此文件中统一管理所有服务端地址，便于切换环境
 
-// 默认服务端地址
-const DEFAULT_SERVER_BASE = 'http://eqsuijiang.wicp.vip:47778';
-
-// 备用服务端地址（本地开发）
-// const DEFAULT_SERVER_BASE = 'http://192.168.10.38:5000';
+// 从环境变量读取服务端地址（在 .env 文件中配置）
+const DEFAULT_SERVER_BASE = process.env.REACT_APP_SERVER_BASE;
 
 export default DEFAULT_SERVER_BASE;

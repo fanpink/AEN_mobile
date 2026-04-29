@@ -7,7 +7,6 @@
   // 若未进入上面两种情况，则使用默认后端地址（直接访问，不使用代理）
   const DEFAULT_BASE = 'http://eqsuijiang.wicp.vip:47778';
   return DEFAULT_BASE;
-}
 ```
 
 ```AEN_mobile\src\setupproxy.js
@@ -52,32 +51,3 @@
 
 你不必使用 `eject`。推荐的功能集适用于小型和中型部署，你不需要在准备好之前使用此功能。然而，我们理解如果无法自定义配置，这个工具可能会显得不够实用。
 
-## 了解更多
-
-你可以在 [Create React App 文档](https://facebook.github.io/create-react-app/docs/getting-started) 中了解更多信息。
-
-要学习 React，请查看 [React 文档](https://reactjs.org/)。
-
-### 代码分割
-
-此部分已移至：[https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### 分析包大小
-
-此部分已移至：[https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### 制作渐进式 Web 应用程序
-
-此部分已移至：[https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### 高级配置
-
-此部分已移至：[https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### 部署
-
-此部分已移至：[https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` 无法压缩
-
-此部分已移至：[https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
